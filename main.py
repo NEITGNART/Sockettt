@@ -68,7 +68,7 @@ Location: http://localhost:15001/404.html
         m, n = server(portnew, "GET /404.html HTTP/1.1")
         f = open("404.html", "rb")
         l = f.read()
-        header = """HTTP/1.1.200 OK    Content-Length: %d
+        header = """HTTP/1.1 404 Not Found    Content-Length: %d
 
     """ % len(l)
         header += l.decode()
@@ -88,6 +88,8 @@ def gogoFile(x):
     header += L.decode()
     x.send(bytes(header, "utf-8"))
     x.close()
+
+
 
 if __name__ == "__main__":
     command = "GET / HTTP/1.1"
