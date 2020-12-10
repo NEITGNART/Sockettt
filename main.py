@@ -95,14 +95,14 @@ if __name__ == "__main__":
     command = "GET / HTTP/1.1"
     port = 15000
 
-    x, z = server(port, command) # x is client and z is respone from x
+    x, z = server(port, command) # x is client and z is response from x
     gogoIndex(x, port)
 
 
     portnew = 15001
 
     commandInfo = "POST / HTTP/1.1"
-    y, t = server(portnew, commandInfo) # y is client and t is respone from y
+    y, t = server(portnew, commandInfo) # y is client and t is response from y
     gogoInfo(y, t)
     y.close()
     portneww = 15002
