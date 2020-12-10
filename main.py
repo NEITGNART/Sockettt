@@ -1,4 +1,7 @@
 import socket
+import io
+import json
+from email.parser import BytesParser
 
 
 def server(port, command):
@@ -12,7 +15,6 @@ def server(port, command):
         print('Waiting for a new connection')
         sc, sockname = sock.accept()
         re = sc.recv(4096).decode()
-        print(re)
         if command in re:
             sock.close()
             return sc, re
