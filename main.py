@@ -35,47 +35,45 @@ def gogoInfo(y, checkPass):
 
 
     if "Username=admin&Password=admin" in checkPass :
-        f = open("info.html", "rb")
-        L = f.read()
+
 
         headernew = """HTTP/1.1 301 Moved Permanently
-            Location: http://localhost:15001/info.html     Content-Type: text/html;    Content-Encoding: UTF-8
+Location: http://localhost:15001/info.html
 
-    """
+"""
+
         print("Headernew", headernew)
-        headernew += L.decode()
         y.send(bytes(headernew, "utf-8"))
-        y.close()
 
-#         T , Y = server(15001, "GET /404Image.jpg HTTP/1.1")
-#
-#         with open("404Image.jpg", 'rb') as file:
-#             contents = f.read()
-#             contents = contents.rstrip("\n").decode("utf-16")
-#             contents = contents.split("\r\n")
-#             header = """HTTP/1.1 200 OK
-#     Content-Type: text/html; charset=UTF-8
-#     Content-Encoding: UTF-8
-#     Content-Length: %d
-#
-# """ % len(contents)
-#
-#             print(header)
-#             header += contents
-#             T.send(header)
+
+        m, n = server(portnew, "GET /info.html HTTP/1.1")
+        f = open("info.html", "rb")
+        l = f.read()
+        header = """HTTP/1.1.200 OK    Content-Length: %d
+
+    """ % len(l)
+        header += l.decode()
+        m.send(bytes(header, "utf-8"))
+
 
 
     else:
-        f = open("404.html", "rb")
-        L = f.read()
 
-        headernew = """HTTP/1.1 404 Not Found
-            Location: http://localhost:15001/404.html     Content-Type: text/html;    Content-Encoding: UTF-8
+        headernew = """HTTP/1.1 301 Moved Permanently
+Location: http://localhost:15001/404.html
 
-            """
-        print("Headernew", headernew)
-        headernew += L.decode()
+"""
         y.send(bytes(headernew, "utf-8"))
+
+        m, n = server(portnew, "GET /404.html HTTP/1.1")
+        f = open("404.html", "rb")
+        l = f.read()
+        header = """HTTP/1.1.200 OK    Content-Length: %d
+
+    """ % len(l)
+        header += l.decode()
+        m.send(bytes(header, "utf-8"))
+
 
 
 def gogoFile(x):
@@ -95,14 +93,14 @@ if __name__ == "__main__":
     command = "GET / HTTP/1.1"
     port = 15000
 
-    x, z = server(port, command) # x is client and z is response from x
+    x, z = server(port, command) # x is client and z is respone from x
     gogoIndex(x, port)
 
 
     portnew = 15001
 
     commandInfo = "POST / HTTP/1.1"
-    y, t = server(portnew, commandInfo) # y is client and t is response from y
+    y, t = server(portnew, commandInfo) # y is client and t is respone from y
     gogoInfo(y, t)
     y.close()
     portneww = 15002
