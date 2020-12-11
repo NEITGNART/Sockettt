@@ -66,9 +66,9 @@ def Wait_for_connection(sock):
 def index(header,query = ""):
     f = open("index.html")
     L = f.read()
-    res = """HTTP/1.1 200 OK  
-    Content-Type: text/html 
-    Content-Length: %d\r\n\r\n""" % len(L)    
+    res =  "HTTP/1.1 200 OK\r\n"  
+    res += "Content-Type: text/html\r\n"
+    res += "Content-Length: %d\r\n\r\n" % len(L) 
     res += L
     return res.encode()
 
@@ -78,39 +78,57 @@ def download(header,query = ""):
     if "file" in query_dict:
         f = ()
         if len(query_dict["file"]) != 1:
-            res = """HTTP/1.1 505 Internal Error
-                Content-type: application/jpg
-                Content-Disposition: attachment; filename="picture.jpg"
-                Content-Length: 0\r\n\r\n""".encode()
+            res = "HTTP/1.1 505 Internal Error".encode()
             print("Internal Error")
         else:
             try:
                 f = open(query_dict["file"][0],"rb")
                 L = f.read()
-                res = """HTTP/1.1 200 OK  
-                Content-type: application/jpg
-                Content-Disposition: attachment; filename="picture.jpg"
-                Content-Length: %d\r\n\r\n""" % len(L) 
+                res =  "HTTP/1.1 200 OK\r\n"  
+                res += "Content-type: image/jpeg\r\n"
+                res += "Content-Disposition: attachment; filename=%s\r\n" %query_dict["file"][0]
+                res += "Content-Length: %d\r\n\r\n" % len(L)
+                res = res.encode()
+                res += L
+                # Do something with the file
+            except IOError:
+                res = """HTTP/1.1 404 File not found\r\n\r\n""".encode()
+                print("File not found")
+    else:
+         res = """HTTP/1.1 400 Bad request  
+            Content-Length: 0\r\n\r\n""".encode()
+    return res
+
+def static_file(header,query = ""):  
+    query_dict = parse.parse_qs(query)
+    res = ""
+    if "file" in query_dict:
+        f = ()
+        if len(query_dict["file"]) != 1:
+            res = "HTTP/1.1 505 Internal Error\r\n\r\n".encode()
+            print("Internal Error")
+        else:
+            try:
+                f = open(query_dict["file"][0],"rb")
+                L = f.read()
+                res =  "HTTP/1.1 200 OK\r\n"  
+                res += "Cache-Control: max-age=3600\r\n"
+                res += "Content-Type: image/jpg\r\n"
+                res += "Content-Length: %d\r\n\r\n" % len(L) 
                 k = len(res)   
                 res = res.encode()
                 res += L
                 # Do something with the file
             except IOError:
-                res = """HTTP/1.1 404 File not found
-                Content-type: application/jpg
-                Content-Disposition: attachment; filename="picture.jpg"
-                Content-Length: 0\r\n\r\n""".encode()
+                res = "HTTP/1.1 404 File not found\r\n\r\n".encode()
                 print("File not found")
     else:
-         res = """HTTP/1.1 400 Bad request  
-            Content-Length: 0\r\n\r\n""".encode()
-        
-        
-    
+         res = "HTTP/1.1 400 Bad request\r\n\r\n".encode()
     return res
 
 App.add_GET("/",index)        
 App.add_GET("/download",download)        
+App.add_GET("/file",static_file)    
 
 if __name__ == "__main__":
     sock = server(default_http_port())
