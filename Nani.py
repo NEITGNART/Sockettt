@@ -17,7 +17,6 @@ Content-Length: %d
         x.close()
 
 
-
 def serverUniqueForImage(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -40,6 +39,8 @@ def serverUniqueForImage(port):
             gogoImage(sc, "VinhSon.jpg")
             sock.close()
             return sc, re
+
+
 
 
 
@@ -140,7 +141,6 @@ def gogoFile(x):
     x.close()
 
 
-
 def serverUniqueforDownload(port):
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -154,10 +154,12 @@ def serverUniqueforDownload(port):
         sc, sockname = sock.accept()
         re = sc.recv(4096).decode()
         print(re)
-        if ("GET /2020-12-12%2011-10-49.mkv HTTP/1.1"):
+
+        if ("GET /2020-12-12%2011-10-49.mkv HTTP/1.1") in re:
             gogoImage(sc, "2020-12-12 11-10-49.mkv")
 
-
+        elif ("GET /404Image.jpg HTTP/1.1") in re:
+            gogoImage(sc, "404Image.jpg")
 
 
 
@@ -184,8 +186,6 @@ if __name__ == "__main__":
     gogoFile(epsilon)
 
     serverUniqueforDownload(20002)
-    
 
-    
-        
-        
+
+
